@@ -5,7 +5,6 @@ import {
   UpdateDateColumn, 
   PrimaryColumn 
 } from "typeorm";
-
 import { v4 as uuid } from "uuid";
 
 @Entity("settings")
@@ -20,10 +19,10 @@ class Setting {
   @Column()
   chat: boolean;
 
-  @CreateDateColumn({name: "created_at"})
+  @CreateDateColumn({ name: "created_at" })
   createdAt: Date;
 
-  @UpdateDateColumn({name: "updated_at"})
+  @UpdateDateColumn({ name: "updated_at" })
   updatedAt: Date;
 
   constructor() {
@@ -33,4 +32,4 @@ class Setting {
   }
 }
 
-export { Setting }
+export { Setting };
