@@ -22,6 +22,7 @@ ws.on("connect", (socket: Socket) => {
 
     if (connection) {
       connection.socketId = socketId;
+      connection.adminId = null;
       await connectionsService.create(connection);
     } else {
       await connectionsService.create({
@@ -35,5 +36,27 @@ ws.on("connect", (socket: Socket) => {
       text
     });
     
-  })
+    const allMessages = await messagesService.listByUser(userId);
+
+    socket.emit("client_list_all_messages", allMessages);
+
+    const allUsers = await connectionsService.findAllWithoutAdmin();
+
+    ws.emit("admin_list_all_users", allUsers);
+  });
+  
+  socket.on("client_send_to_admin", async ({ text, socketId, email }) => {
+    const userId  = await usersService.create(email).then(user => user.id);
+    const message = await messagesService.create({
+      userId,
+      adminId: socketId,
+      text
+    });
+ 
+    ws.to(socketId).emit("admin_receive_message", {
+      message,
+      socket: socket.id
+    });
+  });
+  
 });
